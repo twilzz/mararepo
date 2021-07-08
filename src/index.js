@@ -5,28 +5,16 @@ const canvas = document.getElementById('game');
 const canvContext = canvas.getContext('2d');
 document.querySelector('h3').remove();
 
-const windowWidth = 600;
-const windowHeight = 600;
+const windowWidth = canvas.getAttribute('width');
+const windowHeight = canvas.getAttribute('height');
 const shots = 3;
 let cycle = 0;
 let bottomPressed = false;
 let pX = 276;
 let pY = 256;
 let charDir = 0;
-
-function keyDownHandler(e) {
-  if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-    bottomPressed = true;
-    modifyPosition(e.key);
-  }
-}
-function keyUpHandler(e) {
-  if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-    bottomPressed = false;
-  }
-}
-document.addEventListener('keydown', keyDownHandler);
-document.addEventListener('keyup', keyUpHandler);
+const sprW = 48;
+const sprH = 48;
 
 function regenerateWorld() {
   canvContext.clearRect(0, 0, 600, 600);
@@ -43,29 +31,25 @@ function regenerateWorld() {
   }
 }
 regenerateWorld();
-const spriteW = 48;
-const spriteH = 48;
-const img = document.createElement('img');
-img.src = Character;
 
 function modifyPosition(key) {
   switch (key) {
     case 'ArrowUp':
-      charDir = 144;
+      charDir = sprW * 3;
       if (pY > 0) {
         pY -= 10;
       }
       regenerateWorld();
       break;
     case 'ArrowRight':
-      charDir = 96;
-      if (pX < 600 - spriteW) {
+      charDir = sprW * 2;
+      if (pX < 600 - sprW) {
         pX += 10;
       }
       regenerateWorld();
       break;
     case 'ArrowLeft':
-      charDir = 48;
+      charDir = sprW * 1;
       if (pX > 0) {
         pX -= 10;
       }
@@ -73,19 +57,37 @@ function modifyPosition(key) {
       break;
     default:
       charDir = 0;
-      if (pY < 600 - spriteH) {
+      if (pY < 600 - sprH) {
         pY += 10;
       }
+      cycle = (cycle + 1) % shots;
       regenerateWorld();
       break;
   }
 }
+
+function keyDownHandler(e) {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    bottomPressed = true;
+    modifyPosition(e.key);
+  }
+}
+function keyUpHandler(e) {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    bottomPressed = false;
+  }
+}
+document.addEventListener('keydown', keyDownHandler);
+document.addEventListener('keyup', keyUpHandler);
+
+const img = document.createElement('img');
+img.src = Character;
 
 img.addEventListener('load', () => {
   setInterval(() => {
     if (bottomPressed) {
       cycle = (cycle + 1) % shots;
     }
-    canvContext.drawImage(img, cycle * spriteW, charDir, spriteW, spriteH, pX, pY, spriteW, spriteH);
+    canvContext.drawImage(img, cycle * sprW, charDir, sprW, sprH, pX, pY, sprW, sprH);
   }, 100);
 });
