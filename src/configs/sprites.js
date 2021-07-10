@@ -4,7 +4,7 @@ export default {
   terrain: {
     grass: {
       img: terrainIMG,
-      frames: [[896, 256, 64, 64]],
+      frames: [[64, 576, 64, 64]],
     },
     water: {
       img: terrainIMG,
@@ -12,7 +12,7 @@ export default {
     },
     wall: {
       img: terrainIMG,
-      frames: [[448, 64, 64, 64]],
+      frames: [[448, 0, 64, 64]],
     },
     spawn: {
       img: terrainIMG,

@@ -1,12 +1,15 @@
+import ClientGame from './client/ClientGame';
 import './index.scss';
 import Character from './assets/Male-3-Walk.png';
+
+window.addEventListener('load', () => {
+  ClientGame.init({ tagId: 'game' });
+});
 
 const canvas = document.getElementById('game');
 const canvContext = canvas.getContext('2d');
 document.querySelector('h3').remove();
 
-const windowWidth = canvas.getAttribute('width');
-const windowHeight = canvas.getAttribute('height');
 const shots = 3;
 let cycle = 0;
 let bottomPressed = false;
@@ -16,22 +19,6 @@ let charDir = 0;
 const sprW = 48;
 const sprH = 48;
 
-function regenerateWorld() {
-  canvContext.clearRect(0, 0, 600, 600);
-  for (let j = 0; j <= windowHeight; j += 100) {
-    for (let i = 20; i <= windowWidth; i += 100) {
-      canvContext.beginPath();
-      canvContext.moveTo(i, j + 40);
-      canvContext.lineTo(i + 30, j + 10);
-      canvContext.lineTo(i + 60, j + 40);
-      canvContext.closePath();
-      canvContext.stroke();
-      canvContext.strokeRect(i + 10, j + 40, 40, 40);
-    }
-  }
-}
-regenerateWorld();
-
 function modifyPosition(key) {
   switch (key) {
     case 'ArrowUp':
@@ -39,21 +26,18 @@ function modifyPosition(key) {
       if (pY > 0) {
         pY -= 10;
       }
-      regenerateWorld();
       break;
     case 'ArrowRight':
       charDir = sprW * 2;
       if (pX < 600 - sprW) {
         pX += 10;
       }
-      regenerateWorld();
       break;
     case 'ArrowLeft':
       charDir = sprW * 1;
       if (pX > 0) {
         pX -= 10;
       }
-      regenerateWorld();
       break;
     default:
       charDir = 0;
@@ -61,7 +45,6 @@ function modifyPosition(key) {
         pY += 10;
       }
       cycle = (cycle + 1) % shots;
-      regenerateWorld();
       break;
   }
 }
