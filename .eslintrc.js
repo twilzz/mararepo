@@ -8,5 +8,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  rules: {},
+  rules: { 
+    'linebreak-style': 0,
+    'object-curly-newline': ['error', { 'multiline': true, 'minProperties': 10 }]},
 };
