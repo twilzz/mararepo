@@ -39,28 +39,19 @@ class ClientGame {
     });
   }
 
+  moveTo(x, y) {
+    const { player } = this;
+    if (player) {
+      player.moveByCellCoord(x, y, (cell) => cell.findObjectsByType('grass').length);
+    }
+  }
+
   initKeys() {
     this.engine.input.onKey({
-      ArrowLeft: (keydown) => {
-        if (keydown) {
-          this.player.moveByCellCoord(-1, 0, (cell) => cell.findObjectsByType('grass').length);
-        }
-      },
-      ArrowRight: (keydown) => {
-        if (keydown) {
-          this.player.moveByCellCoord(1, 0, (cell) => cell.findObjectsByType('grass').length);
-        }
-      },
-      ArrowDown: (keydown) => {
-        if (keydown) {
-          this.player.moveByCellCoord(0, 1, (cell) => cell.findObjectsByType('grass').length);
-        }
-      },
-      ArrowUp: (keydown) => {
-        if (keydown) {
-          this.player.moveByCellCoord(0, -1, (cell) => cell.findObjectsByType('grass').length);
-        }
-      },
+      ArrowLeft: (keydown) => keydown && this.moveTo(-1, 0),
+      ArrowRight: (keydown) => keydown && this.moveTo(1, 0),
+      ArrowDown: (keydown) => keydown && this.moveTo(0, 1),
+      ArrowUp: (keydown) => keydown && this.moveTo(0, -1),
     });
   }
 
