@@ -21,17 +21,22 @@ class ClientGame {
   }
 
   createEngine() {
-    return new ClientEngine(document.getElementById(this.cfg.tagId));
+    return new ClientEngine(document.getElementById(this.cfg.tagId), this);
   }
 
   createWorld() {
     return new ClientWorld(this, this.engine, levelCfg);
   }
 
+  getWorld() {
+    return this.map;
+  }
+
   initEngine() {
     this.engine.loadSprites(sprites).then(() => {
       this.map.init();
       this.engine.on('render', (_, time) => {
+        this.engine.camera.focusAtGameObject(this.player);
         this.map.render(time);
       });
       this.engine.start();
@@ -39,19 +44,25 @@ class ClientGame {
     });
   }
 
-  moveTo(x, y) {
+  moveToNewPos(x, y, dir) {
     const { player } = this;
-    if (player) {
-      player.moveByCellCoord(x, y, (cell) => cell.findObjectsByType('grass').length);
+    let canMovie = null;
+    if (player && player.motionProgress === 1) {
+      canMovie = player.moveByCellCoord(x, y, (cell) => cell.findObjectsByType('grass').length);
+    }
+
+    if (canMovie) {
+      player.setState(dir);
+      player.once('motion-stopped', () => player.setState('main'));
     }
   }
 
   initKeys() {
     this.engine.input.onKey({
-      ArrowLeft: (keydown) => keydown && this.moveTo(-1, 0),
-      ArrowRight: (keydown) => keydown && this.moveTo(1, 0),
-      ArrowDown: (keydown) => keydown && this.moveTo(0, 1),
-      ArrowUp: (keydown) => keydown && this.moveTo(0, -1),
+      ArrowLeft: (keydown) => keydown && this.moveToNewPos(-1, 0, 'left'),
+      ArrowRight: (keydown) => keydown && this.moveToNewPos(1, 0, 'right'),
+      ArrowDown: (keydown) => keydown && this.moveToNewPos(0, 1, 'down'),
+      ArrowUp: (keydown) => keydown && this.moveToNewPos(0, -1, 'up'),
     });
   }
 
